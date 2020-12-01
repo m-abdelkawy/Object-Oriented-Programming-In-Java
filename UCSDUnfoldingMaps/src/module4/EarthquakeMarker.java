@@ -7,7 +7,7 @@ import processing.core.PGraphics;
 /** Implements a visual marker for earthquakes on an earthquake map
  * 
  * @author UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
+ * @author Mohammed Abdelkawy
  *
  */
 public abstract class EarthquakeMarker extends SimplePointMarker
@@ -64,10 +64,32 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 		// determine color of marker from depth
 		colorDetermine(pg);
 		
+		if (getAge() == "Past Day") {
+			pg.strokeWeight(2);
+			pg.stroke(125);
+			pg.line(x - radius*5, y + radius*5, x + radius*5, y - radius*5);
+			pg.stroke(100);
+			pg.line(x - radius*5, y - radius*5, x + radius*5, y + radius*5);
+		}
+		
 		// call abstract method implemented in child class to draw marker shape
 		drawEarthquake(pg, x, y);
 		
 		// OPTIONAL TODO: draw X over marker if within past day		
+		
+		if (this.getAge().toLowerCase().contains("Day".toLowerCase())) {
+			/*pg.stroke(0);
+			pg.line(x - radius*2, y + radius*2, x + radius*2, y - radius*2);
+			
+			pg.stroke(0);
+			pg.line(x - radius*2, y - radius*2, x + radius*2, y + radius*2);*/
+			
+			pg.stroke(0);
+			pg.line(x - radius*2, y + radius*2, x + radius*2, y - radius*2);
+			
+			pg.stroke(0);
+			pg.line(x - radius*2, y - radius*2, x + radius*2, y + radius*2);
+		}
 		
 		// reset to previous styling
 		pg.popStyle();
@@ -81,6 +103,10 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	// You might find the getters below helpful.
 	private void colorDetermine(PGraphics pg) {
 		//TODO: Implement this method
+		if(getDepth() >= THRESHOLD_DEEP) pg.fill(255,0,0);
+		else if(getDepth() >= THRESHOLD_INTERMEDIATE) pg.fill(0,0,255);
+		else pg.fill(255,255,0);
+		
 	}
 	
 	
@@ -103,6 +129,10 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	
 	public float getRadius() {
 		return Float.parseFloat(getProperty("radius").toString());
+	}
+	
+	public String getAge() {
+		return (String)getProperty("age");
 	}
 	
 	public boolean isOnLand()
